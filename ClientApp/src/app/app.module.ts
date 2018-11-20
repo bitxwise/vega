@@ -1,3 +1,4 @@
+import { MakeService } from './services/make.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +11,6 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { VehicleFormComponent } from './vehicle-form/vehicle-form.component';
-import { TempComponentComponent } from './temp-component/temp-component.component';
 
 @NgModule({
   declarations: [
@@ -19,8 +19,7 @@ import { TempComponentComponent } from './temp-component/temp-component.componen
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    VehicleFormComponent,
-    TempComponentComponent
+    VehicleFormComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -33,7 +32,9 @@ import { TempComponentComponent } from './temp-component/temp-component.componen
       { path: 'fetch-data', component: FetchDataComponent },
     ])
   ],
-  providers: [],
+  providers: [
+    MakeService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
