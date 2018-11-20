@@ -7,6 +7,6 @@ export class MakeService {
   constructor(private httpClient: HttpClient) { }
 
   getMakes() {
-    return this.httpClient.get('/api/makes');
+    return this.httpClient.get<any[]>('/api/makes');
   }
 }
