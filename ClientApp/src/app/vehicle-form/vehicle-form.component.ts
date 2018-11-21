@@ -1,6 +1,5 @@
 import { VehicleService } from '../services/vehicle.service';
 import { Component, OnInit } from '@angular/core';
-import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
 
 @Component({
   selector: 'app-vehicle-form',
@@ -17,11 +16,9 @@ export class VehicleFormComponent implements OnInit {
     features: []
   };
 
-  constructor(private vehicleService: VehicleService, private toastyService: ToastyService, private toastyConfig: ToastyConfig) {
-      // Assign the selected theme name to the `theme` property of the instance of ToastyConfig. 
-      // Possible values: default, bootstrap, material
-      this.toastyConfig.theme = 'material';
-    }
+  constructor(private vehicleService: VehicleService) {
+    
+  }
 
   ngOnInit() {
     this.vehicleService.getMakes().subscribe(
@@ -53,39 +50,7 @@ export class VehicleFormComponent implements OnInit {
   submit() {
     this.vehicleService.createVehicle(this.vehicle)
       .subscribe(
-        x => { 
-          console.log(x);
-          this.addToast("success", "Success", "Your vehicle has been created.");
-        },
-        err => {
-          this.addToast("error", "Error", "An unexpected error occurred. Your vehicle was not created.")
-        }
+        x => console.log(x)
       );
-  }
-
-  // helpers
-  addToast(toastType, toastTitle, toastMessage) {
-    let toastOptions:ToastOptions = {
-      title: toastTitle,
-      msg: toastMessage,
-      showClose: true,
-      timeout: 5000,
-      theme: 'default',
-      onAdd: (toast:ToastData) => {
-          console.log('Toast ' + toast.id + ' has been added!');
-      },
-      onRemove: function(toast:ToastData) {
-          console.log('Toast ' + toast.id + ' has been removed!');
-      }
-    };
-
-    switch (toastType) {
-      case 'default': this.toastyService.default(toastOptions); break;
-      case 'info': this.toastyService.info(toastOptions); break;
-      case 'success': this.toastyService.success(toastOptions); break;
-      case 'wait': this.toastyService.wait(toastOptions); break;
-      case 'error': this.toastyService.error(toastOptions); break;
-      case 'warning': this.toastyService.warning(toastOptions); break;
-    }
   }
 }
