@@ -13,4 +13,8 @@ export class VehicleService {
   getMakes() {
     return this.httpClient.get<any[]>('/api/makes');
   }
+
+  createVehicle(vehicle) {
+    return this.httpClient.post('/api/vehicles', vehicle);
+  }
 }
