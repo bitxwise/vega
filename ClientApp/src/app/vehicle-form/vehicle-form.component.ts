@@ -92,6 +92,14 @@ export class VehicleFormComponent implements OnInit {
     this.vehicle.modelId = v.model.id;
   }
 
+  delete() {
+    if(confirm("Are you sure you want to delete this vehicle?")) {
+       this.vehicleService.deleteVehicle(this.vehicle.id).subscribe(
+        x => this.router.navigate([''])
+       );
+    }
+  }
+
   submit() {
     if(this.vehicle.id)
       this.vehicleService.updateVehicle(this.vehicle).subscribe(
@@ -111,7 +119,7 @@ export class VehicleFormComponent implements OnInit {
   }
 
   // TODO: duplicated from app.error-handler.ts - should find a better place for this
-  addToast(toastType, toastTitle, toastMessage) {
+  private addToast(toastType, toastTitle, toastMessage) {
     let toastOptions:ToastOptions = {
       title: toastTitle,
       msg: toastMessage,

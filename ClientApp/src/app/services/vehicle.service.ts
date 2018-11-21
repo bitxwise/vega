@@ -19,6 +19,10 @@ export class VehicleService {
     return this.httpClient.post('/api/vehicles', vehicle);
   }
 
+  deleteVehicle(id) {
+    return this.httpClient.delete('/api/vehicles/' + id);
+  }
+
   getVehicle(id) {
     return this.httpClient.get('/api/vehicles/' + id);
   }
