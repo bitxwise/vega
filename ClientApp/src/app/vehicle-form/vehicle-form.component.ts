@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
 import { ActivatedRoute, Router } from '@angular/router';
+import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
 import { SaveVehicle } from './../models/saveVehicle';
 import { Vehicle } from '../models/vehicle';
 import { VehicleService } from '../services/vehicle.service';
@@ -30,8 +31,12 @@ export class VehicleFormComponent implements OnInit {
     }
   };
 
-  constructor(private route: ActivatedRoute, private router: Router, private vehicleService: VehicleService) {
+  constructor(private route: ActivatedRoute, private router: Router, private toastyService: ToastyService, private toastyConfig: ToastyConfig, private vehicleService: VehicleService) {
     route.params.subscribe(p => this.vehicle.id = +p['id']);
+
+    // Assign the selected theme name to the `theme` property of the instance of ToastyConfig. 
+    // Possible values: default, bootstrap, material
+    this.toastyConfig.theme = 'material';
   }
 
   ngOnInit() {
@@ -90,12 +95,44 @@ export class VehicleFormComponent implements OnInit {
   submit() {
     if(this.vehicle.id)
       this.vehicleService.updateVehicle(this.vehicle).subscribe(
-        x => console.log(x)
+        x => {
+          console.log(x);
+          this.addToast('success', 'Vehicle Updated', 'Your vehicle has been updated.')
+        }
       );
     else
       this.vehicleService.createVehicle(this.vehicle)
         .subscribe(
-          x => console.log(x)
+          x => {
+            console.log(x);
+            this.addToast('success', 'Vehicle Created', 'Your vehicle has been created.')
+          }
         );
+  }
+
+  // TODO: duplicated from app.error-handler.ts - should find a better place for this
+  addToast(toastType, toastTitle, toastMessage) {
+    let toastOptions:ToastOptions = {
+      title: toastTitle,
+      msg: toastMessage,
+      showClose: true,
+      timeout: 5000,
+      theme: 'default',
+      onAdd: (toast:ToastData) => {
+          console.log('Toast ' + toast.id + ' has been added!');
+      },
+      onRemove: function(toast:ToastData) {
+          console.log('Toast ' + toast.id + ' has been removed!');
+      }
+    };
+
+    switch (toastType) {
+      case 'default': this.toastyService.default(toastOptions); break;
+      case 'info': this.toastyService.info(toastOptions); break;
+      case 'success': this.toastyService.success(toastOptions); break;
+      case 'wait': this.toastyService.wait(toastOptions); break;
+      case 'error': this.toastyService.error(toastOptions); break;
+      case 'warning': this.toastyService.warning(toastOptions); break;
+    }
   }
 }
