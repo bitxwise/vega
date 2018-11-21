@@ -18,7 +18,7 @@ namespace vega.Persistence
             this.context.Add(vehicle);
         }
 
-        public async Task<Vehicle> Get(int id, bool includeRelated = true)
+        public async Task<Vehicle> GetAsync(int id, bool includeRelated = true)
         {
             if(!includeRelated)
                 return await this.context.Vehicles.FindAsync(id);

@@ -33,7 +33,7 @@ namespace vega.Controllers
             this.repository.Add(vehicle);
             await this.unitOfWork.CompleteAsync();
 
-            vehicle =  await this.repository.Get(vehicle.Id);
+            vehicle =  await this.repository.GetAsync(vehicle.Id);
 
             var result = this.mapper.Map<Vehicle, VehicleResource>(vehicle);
 
@@ -46,7 +46,7 @@ namespace vega.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
             
-            var vehicle = await this.repository.Get(id);
+            var vehicle = await this.repository.GetAsync(id);
             
             if(vehicle == null)
                 return NotFound();
@@ -55,6 +55,7 @@ namespace vega.Controllers
             
             await this.unitOfWork.CompleteAsync();
 
+            vehicle = await this.repository.GetAsync(id);
             var result = this.mapper.Map<Vehicle, SaveVehicleResource>(vehicle);
 
             return Ok(result);
@@ -63,7 +64,7 @@ namespace vega.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVehicle(int id)
         {
-            var vehicle = await this.repository.Get(id, includeRelated: false);
+            var vehicle = await this.repository.GetAsync(id, includeRelated: false);
             
             if(vehicle == null)
                 return NotFound();
@@ -78,7 +79,7 @@ namespace vega.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicle(int id)
         {
-            var vehicle = await this.repository.Get(id);
+            var vehicle = await this.repository.GetAsync(id);
 
             if(vehicle == null)
                 return NotFound();
