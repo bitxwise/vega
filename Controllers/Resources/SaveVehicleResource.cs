@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace vega.Controllers.Resources
 {
 
-    public class VehicleResource
+    public class SaveVehicleResource
     {
         public int Id { get; set; }
 
@@ -18,7 +18,7 @@ namespace vega.Controllers.Resources
 
         public ICollection<int> Features { get; set; }
 
-        public VehicleResource()
+        public SaveVehicleResource()
         {
             Features = new Collection<int>();
         }

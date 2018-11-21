@@ -21,23 +21,23 @@ namespace vega.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateVehicle([FromBody] VehicleResource vehicleResource)
+        public async Task<IActionResult> CreateVehicle([FromBody] SaveVehicleResource vehicleResource)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var vehicle = this.mapper.Map<VehicleResource, Vehicle>(vehicleResource);
+            var vehicle = this.mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
 
             this.context.Vehicles.Add(vehicle);
             await this.context.SaveChangesAsync();
 
-            var result = this.mapper.Map<Vehicle, VehicleResource>(vehicle);
+            var result = this.mapper.Map<Vehicle, SaveVehicleResource>(vehicle);
 
             return Ok(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateVehicle(int id, [FromBody] VehicleResource vehicleResource)
+        public async Task<IActionResult> UpdateVehicle(int id, [FromBody] SaveVehicleResource vehicleResource)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -46,11 +46,11 @@ namespace vega.Controllers
             if(vehicle == null)
                 return NotFound();
             
-            this.mapper.Map<VehicleResource, Vehicle>(vehicleResource, vehicle);
+            this.mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource, vehicle);
             
             await this.context.SaveChangesAsync();
 
-            var result = this.mapper.Map<Vehicle, VehicleResource>(vehicle);
+            var result = this.mapper.Map<Vehicle, SaveVehicleResource>(vehicle);
 
             return Ok(result);
         }
@@ -78,7 +78,7 @@ namespace vega.Controllers
             if(vehicle == null)
                 return NotFound();
             
-            var result = this.mapper.Map<Vehicle, VehicleResource>(vehicle);
+            var result = this.mapper.Map<Vehicle, SaveVehicleResource>(vehicle);
 
             return Ok(result);
         }
