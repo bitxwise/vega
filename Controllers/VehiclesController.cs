@@ -43,6 +43,9 @@ namespace vega.Controllers
                 return BadRequest(ModelState);
 
             var vehicle = await this.context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
+            if(vehicle == null)
+                return NotFound();
+            
             this.mapper.Map<VehicleResource, Vehicle>(vehicleResource, vehicle);
 
             await this.context.SaveChangesAsync();
@@ -50,6 +53,21 @@ namespace vega.Controllers
             var result = this.mapper.Map<Vehicle, VehicleResource>(vehicle);
 
             return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteVehicle(int id)
+        {
+            var vehicle = await this.context.Vehicles.FindAsync(id);
+            
+            if(vehicle == null)
+                return NotFound();
+
+            this.context.Vehicles.Remove(vehicle);
+
+            await this.context.SaveChangesAsync();
+
+            return Ok(id);
         }
     }
 }
