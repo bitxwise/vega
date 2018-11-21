@@ -3,7 +3,7 @@ import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
 
 export class AppErrorHandler implements ErrorHandler {
     
-    constructor(private ngZone: NgZone, @Inject(ToastyService) private toastyService: ToastyService, @Inject(ToastyConfig) private toastyConfig: ToastyConfig)
+    constructor(@Inject(NgZone) private ngZone: NgZone, @Inject(ToastyService) private toastyService: ToastyService, @Inject(ToastyConfig) private toastyConfig: ToastyConfig)
     {
       // Assign the selected theme name to the `theme` property of the instance of ToastyConfig. 
       // Possible values: default, bootstrap, material
