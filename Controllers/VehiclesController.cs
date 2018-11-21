@@ -12,13 +12,13 @@ namespace vega.Controllers
     public class VehiclesController : Controller
     {
         private readonly IMapper mapper;
-        private readonly VegaDbContext context;
         private readonly IVehicleRepository repository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public VehiclesController(VegaDbContext context, IVehicleRepository repository, IMapper mapper)
+        public VehiclesController(IVehicleRepository repository, IUnitOfWork unitOfWork, IMapper mapper)
         {
-            this.context = context;
             this.repository = repository;
+            this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
 
@@ -31,7 +31,7 @@ namespace vega.Controllers
             var vehicle = this.mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
 
             this.repository.Add(vehicle);
-            await this.context.SaveChangesAsync();
+            await this.unitOfWork.CompleteAsync();
 
             vehicle =  await this.repository.Get(vehicle.Id);
 
@@ -53,7 +53,7 @@ namespace vega.Controllers
             
             this.mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource, vehicle);
             
-            await this.context.SaveChangesAsync();
+            await this.unitOfWork.CompleteAsync();
 
             var result = this.mapper.Map<Vehicle, SaveVehicleResource>(vehicle);
 
@@ -70,7 +70,7 @@ namespace vega.Controllers
 
             this.repository.Remove(vehicle);
 
-            await this.context.SaveChangesAsync();
+            await this.unitOfWork.CompleteAsync();
 
             return Ok(id);
         }
