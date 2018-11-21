@@ -1,5 +1,9 @@
 import { VehicleService } from '../services/vehicle.service';
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
+import { routerNgProbeToken } from '@angular/router/src/router_module';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-vehicle-form',
@@ -16,25 +20,38 @@ export class VehicleFormComponent implements OnInit {
     features: []
   };
 
-  constructor(private vehicleService: VehicleService) {
-    
+  constructor(private route: ActivatedRoute, private router: Router, private vehicleService: VehicleService) {
+    route.params.subscribe(p => this.vehicle.id = +p['id']);
   }
 
   ngOnInit() {
-    this.vehicleService.getMakes().subscribe(
-      makes => this.makes = makes
-    );
+    var sources: Observable<any>[] = [
+      this.vehicleService.getMakes(),
+      this.vehicleService.getFeatures()
+    ];
 
-    this.vehicleService.getFeatures().subscribe(
-      features => this.features = features
-    );
+    if(this.vehicle.id)
+        sources.push(this.vehicleService.getVehicle(this.vehicle.id));
+
+    Observable.forkJoin(sources).subscribe(data => {
+      this.makes = data[0];
+      this.features = data[1];
+
+      if(this.vehicle.id)
+        this.vehicle = data[2];
+    }, err => {
+      if(err.status == 404)
+        this.router.navigate(['']);
+      else
+        throw err;
+    });
   }
 
   onFeatureToggle(featureId, $event) {
     if($event.target.checked)
       this.vehicle.features.push(featureId);
     else {
-      var featureIndex = this.vehicle.features.indexOf(featureId);
+      let featureIndex = this.vehicle.features.indexOf(featureId);
       this.vehicle.features.splice(featureIndex, 1);
     }
   }

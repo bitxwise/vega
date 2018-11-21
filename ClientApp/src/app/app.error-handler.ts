@@ -11,7 +11,7 @@ export class AppErrorHandler implements ErrorHandler {
     }
 
     handleError(error: any): void {
-        console.log("ERROR");
+        console.log("ERROR: " + error);
         this.ngZone.run(() => this.addToast("error", "Error", "An unexpected error occurred."));
     }
 

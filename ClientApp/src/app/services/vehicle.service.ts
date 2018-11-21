@@ -17,4 +17,8 @@ export class VehicleService {
   createVehicle(vehicle) {
     return this.httpClient.post('/api/vehicles', vehicle);
   }
+
+  getVehicle(id) {
+    return this.httpClient.get('/api/vehicles/' + id);
+  }
 }
