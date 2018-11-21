@@ -38,7 +38,7 @@
   </div>
   <div class="form-group">
     <label for="contactPhone">Phone</label>
-    <input type="text" id="contactPhone" name="contactPhone" class="form-control" [(ngModel)]="vehicle.contact.Phone" required #contactPhone="ngModel">
+    <input type="text" id="contactPhone" name="contactPhone" class="form-control" [(ngModel)]="vehicle.contact.phone" required #contactPhone="ngModel">
     <div class="alert alert-danger" *ngIf="contactPhone.touched && !contactPhone.valid">Please specify the new vehicle's contact phone number.</div>
   </div>
   <div class="form-group">
