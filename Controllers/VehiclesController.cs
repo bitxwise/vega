@@ -41,13 +41,13 @@ namespace vega.Controllers
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-
+            
             var vehicle = await this.context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
             if(vehicle == null)
                 return NotFound();
             
             this.mapper.Map<VehicleResource, Vehicle>(vehicleResource, vehicle);
-
+            
             await this.context.SaveChangesAsync();
 
             var result = this.mapper.Map<Vehicle, VehicleResource>(vehicle);
