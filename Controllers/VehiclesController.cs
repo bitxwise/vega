@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using vega.Controllers.Resources;
 using vega.Models;
+using vega.Persistence;
 
 namespace vega.Controllers
 {
@@ -9,18 +11,25 @@ namespace vega.Controllers
     public class VehiclesController : Controller
     {
         private readonly IMapper mapper;
+        private readonly VegaDbContext context;
 
-        public VehiclesController(IMapper mapper)
+        public VehiclesController(VegaDbContext context, IMapper mapper)
         {
+            this.context = context;
             this.mapper = mapper;
         }
 
         [HttpPost]
-        public IActionResult CreateVehicle([FromBody] VehicleResource vehicleResource)
+        public async Task<IActionResult> CreateVehicle([FromBody] VehicleResource vehicleResource)
         {
-            Vehicle vehicle = this.mapper.Map<VehicleResource, Vehicle>(vehicleResource);
+            var vehicle = this.mapper.Map<VehicleResource, Vehicle>(vehicleResource);
 
-            return Ok(vehicle);
+            this.context.Vehicles.Add(vehicle);
+            await this.context.SaveChangesAsync();
+
+            var result = this.mapper.Map<Vehicle, VehicleResource>(vehicle);
+            
+            return Ok(result);
         }
     }
 }
