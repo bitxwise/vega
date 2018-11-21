@@ -7,18 +7,18 @@ namespace vega.Controllers.Resources
     {
         public int Id { get; set; }
 
-        public MakeResource Make { get; set; }
-        public ModelResource Model { get; set; }
+        public NamedResource Make { get; set; }
+        public NamedResource Model { get; set; }
         
         public bool IsRegistered { get; set; }
 
         public ContactResource Contact { get; set; }
         
-        public ICollection<FeatureResource> Features { get; set; }
+        public ICollection<NamedResource> Features { get; set; }
 
         public VehicleResource()
         {
-            Features = new Collection<FeatureResource>();
+            Features = new Collection<NamedResource>();
         }
     }
 }

@@ -3,16 +3,13 @@ using System.Collections.ObjectModel;
 
 namespace vega.Controllers.Resources
 {
-    public class MakeResource
+    public class MakeResource : NamedResource
     {
-        public int Id { get; set; }
-        
-        public string Name { get; set; }
-        public ICollection<ModelResource> Models { get; set; }
+        public ICollection<NamedResource> Models { get; set; }
 
         public MakeResource()
         {
-            Models = new Collection<ModelResource>();
+            Models = new Collection<NamedResource>();
         }
     }
 }
