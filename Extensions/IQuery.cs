@@ -6,8 +6,8 @@ namespace vega.Extensions
 
         bool IsSortAscending { get; }
 
-        int Page { get; }
+        int? Page { get; }
 
-        int PageSize { get; }
+        int? PageSize { get; }
     }
 }
