@@ -11,7 +11,7 @@ namespace vega.Core.Models
 
         public bool IsSupported(long byteSize)
         {
-            return byteSize > MaxBytes;
+            return byteSize < MaxBytes;
         }
 
         public bool IsSupported(string fileName)

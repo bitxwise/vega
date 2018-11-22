@@ -44,7 +44,7 @@ namespace vega.Controllers
                 return BadRequest("No file specified");
 
             if (!photoSettings.IsSupported(file.Length))
-                return BadRequest("File size exceeded maximum size");
+                return BadRequest(string.Format("File size {0} exceeded maximum size {1}", file.Length, photoSettings.MaxBytes));
 
             if(!photoSettings.IsSupported(file.FileName))
                 return BadRequest(string.Format("File type not supported. Only the following file types are supported: {0}", string.Join(", ", photoSettings.ValidFileTypes)));
