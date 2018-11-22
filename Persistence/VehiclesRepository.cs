@@ -21,7 +21,7 @@ namespace vega.Persistence
             this.context.Add(vehicle);
         }
 
-        public async Task<IEnumerable<Vehicle>> GetAllAsync(Filter filter = null)
+        public async Task<IEnumerable<Vehicle>> GetAllAsync(VehicleQuery filter = null)
         {
             var query = this.context.Vehicles
                 .Include(v => v.Model)

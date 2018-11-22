@@ -1,6 +1,6 @@
 namespace vega.Core.Models
 {
-    public class Filter
+    public class VehicleQuery
     {
         public int? MakeId { get; set; }
 
