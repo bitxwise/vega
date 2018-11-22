@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using vega.Core;
+using vega.Core.Models;
 using vega.Persistence;
 
 namespace vega
@@ -30,6 +31,8 @@ namespace vega
 
             services.AddScoped<IVehicleRepository, VehiclesRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.Configure<PhotoSettings>(Configuration.GetSection("PhotoSettings"));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
