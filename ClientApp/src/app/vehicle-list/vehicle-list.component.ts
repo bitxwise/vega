@@ -14,14 +14,14 @@ export class VehicleListComponent implements OnInit {
 
   makes: NamedProperty[];
   vehicles : Vehicle[];
-  filter: any = {}
+  query: any = {}
 
   constructor(private vehicleService: VehicleService) { }
 
   ngOnInit() {
     var sources = [
       this.vehicleService.getMakes(),
-      this.vehicleService.getVehicles(this.filter)
+      this.vehicleService.getVehicles(this.query)
     ];
 
     Observable.forkJoin(sources).subscribe(data => {
@@ -35,13 +35,24 @@ export class VehicleListComponent implements OnInit {
   }
 
   populateVehicles() {
-    this.vehicleService.getVehicles(this.filter).subscribe(
+    this.vehicleService.getVehicles(this.query).subscribe(
       vehicles => this.vehicles = vehicles
     );
   }
 
   resetFilter() {
-    this.filter = {};
+    this.query = {};
     this.onFilterChange();
+  }
+
+  sortBy(fieldName) {
+    if(this.query.sortBy === fieldName)
+      this.query.isSortAscending = !this.query.isSortAscending;
+    else {
+      this.query.sortBy = fieldName;
+      this.query.isSortAscending = true;
+    }
+
+    this.populateVehicles();
   }
 }
