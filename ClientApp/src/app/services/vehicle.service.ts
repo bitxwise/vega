@@ -5,6 +5,8 @@ import { SaveVehicle } from '../models/saveVehicle';
 @Injectable()
 export class VehicleService {
 
+  private readonly vehiclesEndpoint = "/api/vehicles";
+
   constructor(private httpClient: HttpClient) { }
 
   getFeatures() {
@@ -16,22 +18,22 @@ export class VehicleService {
   }
 
   createVehicle(vehicle: SaveVehicle) {
-    return this.httpClient.post('/api/vehicles', vehicle);
+    return this.httpClient.post(this.vehiclesEndpoint, vehicle);
   }
 
   deleteVehicle(id) {
-    return this.httpClient.delete('/api/vehicles/' + id);
+    return this.httpClient.delete(this.vehiclesEndpoint + '/' + id);
   }
 
   getVehicle(id) {
-    return this.httpClient.get('/api/vehicles/' + id);
+    return this.httpClient.get(this.vehiclesEndpoint + '/' + id);
   }
 
   getVehicles() {
-    return this.httpClient.get<any[]>('/api/vehicles');
+    return this.httpClient.get<any[]>(this.vehiclesEndpoint);
   }
 
   updateVehicle(vehicle: SaveVehicle) {
-    return this.httpClient.put('/api/vehicles/' + vehicle.id, vehicle);
+    return this.httpClient.put(this.vehiclesEndpoint + '/' + vehicle.id, vehicle);
   }
 }
