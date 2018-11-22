@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -87,6 +89,14 @@ namespace vega.Controllers
             var result = this.mapper.Map<Vehicle, VehicleResource>(vehicle);
 
             return Ok(result);
+        }
+
+        [HttpGet()]
+        public async Task<IEnumerable<VehicleResource>> GetVehicles()
+        {
+            var vehicles = await this.repository.GetAllAsync();
+
+            return this.mapper.Map<IEnumerable<Vehicle>, IEnumerable<VehicleResource>>(vehicles);
         }
     }
 }

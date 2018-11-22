@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
 import { ActivatedRoute, Router } from '@angular/router';
-import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
+import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 import { SaveVehicle } from './../models/saveVehicle';
 import { Vehicle } from '../models/vehicle';
 import { VehicleService } from '../services/vehicle.service';
@@ -44,9 +44,13 @@ export class VehicleFormComponent implements OnInit {
       this.vehicleService.getMakes(),
       this.vehicleService.getFeatures()
     ];
-
+    
     if(this.vehicle.id)
-        sources.push(this.vehicleService.getVehicle(this.vehicle.id));
+      sources.push(this.vehicleService.getVehicle(this.vehicle.id));
+    
+    // protect against NULL vehicle.id value, which would result in "Error converting value {null} to type 'System.Int32'"
+    else
+      this.vehicle.id = 0;
 
     Observable.forkJoin(sources).subscribe(data => {
       this.makes = data[0];
@@ -109,13 +113,12 @@ export class VehicleFormComponent implements OnInit {
         }
       );
     else
-      this.vehicleService.createVehicle(this.vehicle)
-        .subscribe(
-          x => {
-            console.log(x);
-            this.addToast('success', 'Vehicle Created', 'Your vehicle has been created.')
-          }
-        );
+      this.vehicleService.createVehicle(this.vehicle).subscribe(
+        x => {
+          console.log(x);
+          this.addToast('success', 'Vehicle Created', 'Your vehicle has been created.')
+        }
+      );
   }
 
   // TODO: duplicated from app.error-handler.ts - should find a better place for this

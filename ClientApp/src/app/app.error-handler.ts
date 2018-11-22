@@ -1,5 +1,5 @@
 import { ErrorHandler, Inject, NgZone } from "@angular/core";
-import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
+import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 
 export class AppErrorHandler implements ErrorHandler {
     
@@ -12,7 +12,7 @@ export class AppErrorHandler implements ErrorHandler {
 
     handleError(error: any): void {
         console.log("ERROR: " + error);
-        this.ngZone.run(() => this.addToast("error", "Error", "An unexpected error occurred."));
+        this.ngZone.run(() => this.addToast("error", "Error", "An unexpected error occurred." + error));
     }
 
     addToast(toastType, toastTitle, toastMessage) {

@@ -27,6 +27,10 @@ export class VehicleService {
     return this.httpClient.get('/api/vehicles/' + id);
   }
 
+  getVehicles() {
+    return this.httpClient.get<any[]>('/api/vehicles');
+  }
+
   updateVehicle(vehicle: SaveVehicle) {
     return this.httpClient.put('/api/vehicles/' + vehicle.id, vehicle);
   }
