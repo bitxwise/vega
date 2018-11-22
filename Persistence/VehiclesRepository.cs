@@ -50,7 +50,9 @@ namespace vega.Persistence
                 if(query.ModelId.HasValue)
                     queryable = queryable.Where(v => v.Model.Id == query.ModelId.Value);
                 
-                queryable = queryable.ApplyOrdering(query, this.vehicleFieldExpressionMap);
+                queryable = queryable
+                    .ApplyOrdering(query, this.vehicleFieldExpressionMap)
+                    .ApplyPaging(query);
             }
 
             return await queryable.ToArrayAsync();

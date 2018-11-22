@@ -17,5 +17,16 @@ namespace vega.Extensions
             else
                 return queryable.OrderByDescending(fieldExpressionMap[query.SortBy]);
         }
+
+        public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> queryable, IQuery query)
+        {
+            if(query.Page <= 0)
+                throw new ArgumentException("Page must be at least 1.", "query.Page");
+
+            if(query.PageSize <= 0)
+                throw new ArgumentException("Page size must be at least 1.", "query.PageSize");
+
+            return queryable.Skip((query.Page - 1) * query.PageSize).Take(query.PageSize);
+        }
     }
 }

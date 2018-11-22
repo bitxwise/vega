@@ -5,5 +5,9 @@ namespace vega.Extensions
         string SortBy { get; }
 
         bool IsSortAscending { get; }
+
+        int Page { get; }
+
+        int PageSize { get; }
     }
 }
