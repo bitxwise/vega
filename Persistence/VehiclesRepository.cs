@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using vega.Core;
 using vega.Core.Models;
+using vega.Extensions;
 
 namespace vega.Persistence
 {
@@ -11,9 +14,17 @@ namespace vega.Persistence
     {
         private readonly VegaDbContext context;
 
+        private readonly Dictionary<string, Expression<Func<Vehicle, object>>> vehicleFieldExpressionMap;
+
         public VehiclesRepository(VegaDbContext context)
         {
             this.context = context;
+            
+            this.vehicleFieldExpressionMap = new Dictionary<string, Expression<Func<Vehicle, object>>>() {
+                ["make"] = v => v.Model.Make.Name,
+                ["model"] = v => v.Model.Name,
+                ["contactName"] = v => v.ContactName
+            };
         }
 
         public void Add(Vehicle vehicle)
@@ -21,25 +32,28 @@ namespace vega.Persistence
             this.context.Add(vehicle);
         }
 
-        public async Task<IEnumerable<Vehicle>> GetAllAsync(VehicleQuery filter = null)
+        public async Task<IEnumerable<Vehicle>> GetAllAsync(VehicleQuery query = null)
         {
-            var query = this.context.Vehicles
+            var queryable = this.context.Vehicles
                 .Include(v => v.Model)
                     .ThenInclude(m => m.Make)
                 .Include(v => v.Features)
                     .ThenInclude(vf => vf.Feature)
                 .AsQueryable();
 
-            if(filter != null)
+            // apply query attributes
+            if(query != null)
             {
-                if(filter.MakeId.HasValue)
-                    query = query.Where(v => v.Model.MakeId == filter.MakeId.Value);
+                if(query.MakeId.HasValue)
+                    queryable = queryable.Where(v => v.Model.MakeId == query.MakeId.Value);
                 
-                if(filter.ModelId.HasValue)
-                    query = query.Where(v => v.Model.Id == filter.ModelId.Value);
+                if(query.ModelId.HasValue)
+                    queryable = queryable.Where(v => v.Model.Id == query.ModelId.Value);
+                
+                queryable = queryable.ApplyOrdering(query, this.vehicleFieldExpressionMap);
             }
 
-            return await query.ToArrayAsync();
+            return await queryable.ToArrayAsync();
         }
 
         public async Task<Vehicle> GetAsync(int id, bool includeRelated = true)
