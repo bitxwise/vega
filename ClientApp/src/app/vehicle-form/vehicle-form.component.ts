@@ -30,9 +30,19 @@ export class VehicleFormComponent implements OnInit {
       phone: ''
     }
   };
+  vehicleId: number;
 
   constructor(private route: ActivatedRoute, private router: Router, private toastyService: ToastyService, private toastyConfig: ToastyConfig, private vehicleService: VehicleService) {
-    route.params.subscribe(p => this.vehicle.id = +p['id']);
+    route.params.subscribe(p => {
+      this.vehicleId = +p['id'] || 0;
+
+      if(isNaN(this.vehicleId) || this.vehicleId < 0) {
+        this.router.navigate(['/vehicles']);
+        return;
+      }
+      
+      this.vehicle.id = this.vehicleId;
+    });
 
     // Assign the selected theme name to the `theme` property of the instance of ToastyConfig. 
     // Possible values: default, bootstrap, material
@@ -47,10 +57,6 @@ export class VehicleFormComponent implements OnInit {
     
     if(this.vehicle.id)
       sources.push(this.vehicleService.getVehicle(this.vehicle.id));
-    
-    // protect against NULL vehicle.id value, which would result in "Error converting value {null} to type 'System.Int32'"
-    else
-      this.vehicle.id = 0;
 
     Observable.forkJoin(sources).subscribe(data => {
       this.makes = data[0];
@@ -63,9 +69,8 @@ export class VehicleFormComponent implements OnInit {
     }, err => {
       if(err.status == 404)
         this.router.navigate(['']);
-      else
-        throw err;
-    });
+      }
+    );
   }
 
   onFeatureToggle(featureId, $event) {
@@ -96,29 +101,14 @@ export class VehicleFormComponent implements OnInit {
     this.vehicle.modelId = v.model.id;
   }
 
-  delete() {
-    if(confirm("Are you sure you want to delete this vehicle?")) {
-       this.vehicleService.deleteVehicle(this.vehicle.id).subscribe(
-        x => this.router.navigate([''])
-       );
-    }
-  }
-
   submit() {
-    if(this.vehicle.id)
-      this.vehicleService.updateVehicle(this.vehicle).subscribe(
-        x => {
-          console.log(x);
-          this.addToast('success', 'Vehicle Updated', 'Your vehicle has been updated.')
-        }
-      );
-    else
-      this.vehicleService.createVehicle(this.vehicle).subscribe(
-        x => {
-          console.log(x);
-          this.addToast('success', 'Vehicle Created', 'Your vehicle has been created.')
-        }
-      );
+    let result$ = (this.vehicle.id) ? this.vehicleService.updateVehicle(this.vehicle) : this.vehicleService.createVehicle(this.vehicle);
+    let successMessage = (this.vehicle.id) ? "Vehicle Updated" : "Vehicle Created";
+
+    result$.subscribe(v => {
+      this.addToast('success', 'Success', successMessage);
+      this.router.navigate(['/vehicles/', this.vehicle.id]);
+    });
   }
 
   // TODO: duplicated from app.error-handler.ts - should find a better place for this

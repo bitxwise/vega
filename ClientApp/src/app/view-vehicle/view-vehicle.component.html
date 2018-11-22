@@ -1,0 +1,28 @@
+<h2>View Vehicle</h2>
+
+<!-- Tab Panes -->
+<div class="tab-content" *ngIf="vehicle">
+
+  <!-- Vehicle Tab -->
+  <div role="tabpanel" class="tab-pane active" id="basic">
+    <h3>{{ vehicle.make.name }} {{ vehicle.model.name }} </h3>
+    <ul>
+      <li>{{ vehicle.isRegistered ? 'Registered' : 'Unregistered' }}</li>
+    </ul>
+    <h4>Features</h4>
+    <ul>
+      <li *ngFor="let f of vehicle.features">{{ f.name }}</li>
+    </ul>
+    <h4>Contact</h4>
+    <ul>
+      <li>{{ vehicle.contact.name }}</li>
+      <li>{{ vehicle.contact.phone }}</li>
+      <li *ngIf="vehicle.contact.email">{{ vehicle.contact.email }}</li>
+    </ul>
+  </div>
+  <p>
+    <a [routerLink]="['/vehicles/edit/', vehicleId]" routerLinkActive="router-link-active" class="btn btn-primary">Edit</a>
+    <button *ngIf="vehicle.id" class="btn btn-danger" type="button" (click)="delete()">Delete</button>
+    <a [routerLink]="['/vehicles']" routerLinkActive="router-link-active" class="btn btn-primary">All Vehicles</a>
+  </p>
+</div>
