@@ -13,7 +13,6 @@ import { NamedProperty } from '../models/namedProperty';
 export class VehicleListComponent implements OnInit {
 
   makes: NamedProperty[];
-  allVehicles: Vehicle[];
   vehicles : Vehicle[];
   filter: any = {}
 
@@ -22,27 +21,23 @@ export class VehicleListComponent implements OnInit {
   ngOnInit() {
     var sources = [
       this.vehicleService.getMakes(),
-      this.vehicleService.getVehicles()
+      this.vehicleService.getVehicles(this.filter)
     ];
 
     Observable.forkJoin(sources).subscribe(data => {
       this.makes = data[0];
-      this.vehicles = this.allVehicles = data[1];
+      this.vehicles = data[1];
     })
   }
 
   onFilterChange() {
-    let vehicles = this.allVehicles;
+    this.populateVehicles();
+  }
 
-    if(this.filter.makeId) {
-      vehicles = vehicles.filter(v => v.make.id == this.filter.makeId);
-    }
-
-    if(this.filter.modelId) {
-      vehicles = vehicles.filter(v => v.model.id == this.filter.modelId);
-    }
-
-    this.vehicles = vehicles;
+  populateVehicles() {
+    this.vehicleService.getVehicles(this.filter).subscribe(
+      vehicles => this.vehicles = vehicles
+    );
   }
 
   resetFilter() {

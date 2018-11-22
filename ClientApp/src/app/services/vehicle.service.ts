@@ -29,11 +29,24 @@ export class VehicleService {
     return this.httpClient.get(this.vehiclesEndpoint + '/' + id);
   }
 
-  getVehicles() {
-    return this.httpClient.get<any[]>(this.vehiclesEndpoint);
+  getVehicles(filter) {
+    return this.httpClient.get<any[]>(this.vehiclesEndpoint + '?' + this.toQueryString(filter));
   }
 
   updateVehicle(vehicle: SaveVehicle) {
     return this.httpClient.put(this.vehiclesEndpoint + '/' + vehicle.id, vehicle);
+  }
+
+  toQueryString(filter) {
+    let parts = [];
+
+    for(let field in filter) {
+      let value = filter[field];
+      
+      if(value != null && value != undefined)
+        parts.push(encodeURIComponent(field) + "=" + encodeURIComponent(value));
+    }
+
+    return parts.join('&');
   }
 }
