@@ -32,8 +32,10 @@ namespace vega.Persistence
             this.context.Add(vehicle);
         }
 
-        public async Task<IEnumerable<Vehicle>> GetAllAsync(VehicleQuery query = null)
+        public async Task<QueryResult<Vehicle>> GetAllAsync(VehicleQuery query = null)
         {
+            var result = new QueryResult<Vehicle>();
+
             var queryable = this.context.Vehicles
                 .Include(v => v.Model)
                     .ThenInclude(m => m.Make)
@@ -50,12 +52,21 @@ namespace vega.Persistence
                 if(query.ModelId.HasValue)
                     queryable = queryable.Where(v => v.Model.Id == query.ModelId.Value);
                 
+                // get total item count *before* applying paging options
+                result.TotalItems = await queryable.CountAsync();
+
                 queryable = queryable
                     .ApplyOrdering(query, this.vehicleFieldExpressionMap)
                     .ApplyPaging(query);
             }
+            else
+            {
+                result.TotalItems = await queryable.CountAsync();
+            }
 
-            return await queryable.ToArrayAsync();
+            result.Items = await queryable.ToArrayAsync();
+
+            return result;
         }
 
         public async Task<Vehicle> GetAsync(int id, bool includeRelated = true)

@@ -30,7 +30,7 @@ export class VehicleService {
   }
 
   getVehicles(filter) {
-    return this.httpClient.get<any[]>(this.vehiclesEndpoint + '?' + this.toQueryString(filter));
+    return this.httpClient.get(this.vehiclesEndpoint + '?' + this.toQueryString(filter));
   }
 
   updateVehicle(vehicle: SaveVehicle) {

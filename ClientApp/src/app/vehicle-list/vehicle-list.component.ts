@@ -12,9 +12,14 @@ import { NamedProperty } from '../models/namedProperty';
 })
 export class VehicleListComponent implements OnInit {
 
+  private readonly PAGE_SIZE = 3;
+
   makes: NamedProperty[];
-  vehicles : Vehicle[];
-  query: any = {}
+  query: any = {
+    pageSize: this.PAGE_SIZE,
+    page: 1
+  };
+  queryResult: any = {};
   columns = [
     { title: "Id" },
     { title: "Make", key: "make", isSortable: true },
@@ -26,30 +31,31 @@ export class VehicleListComponent implements OnInit {
   constructor(private vehicleService: VehicleService) { }
 
   ngOnInit() {
-    var sources = [
-      this.vehicleService.getMakes(),
-      this.vehicleService.getVehicles(this.query)
-    ];
-
-    Observable.forkJoin(sources).subscribe(data => {
-      this.makes = data[0];
-      this.vehicles = data[1];
-    })
+    this.vehicleService.getMakes().subscribe(makes => this.makes = makes);
+    this.populateVehicles();
   }
 
-  onFilterChange() {
+  onFilterChanged() {
+    this.query.page = 1;
+    this.query.pageSize = this.PAGE_SIZE;
+    this.populateVehicles();
+  }
+
+  onPageChanged(page) {
+    this.query.page = page;
     this.populateVehicles();
   }
 
   populateVehicles() {
-    this.vehicleService.getVehicles(this.query).subscribe(
-      vehicles => this.vehicles = vehicles
-    );
+    this.vehicleService.getVehicles(this.query).subscribe(result => this.queryResult = result);
   }
 
   resetFilter() {
-    this.query = {};
-    this.onFilterChange();
+    this.query = {
+      page: 1,
+      pageSize: this.PAGE_SIZE
+    };
+    this.populateVehicles();
   }
 
   sortBy(fieldName) {
