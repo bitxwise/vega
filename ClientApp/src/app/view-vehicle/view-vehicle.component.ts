@@ -1,5 +1,6 @@
+import { PhotoService } from './../services/photo.service';
 import { VehicleService } from './../services/vehicle.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastyService, ToastyConfig } from 'ng2-toasty';
 import { Vehicle } from '../models/vehicle';
@@ -16,7 +17,11 @@ export class ViewVehicleComponent implements OnInit {
   // separate field so we can leverage ngIf in the template
   vehicleId: number;
 
-  constructor(private route: ActivatedRoute, private router: Router, private toastyService: ToastyService, private toastyConfig: ToastyConfig, private vehicleService: VehicleService) {
+  @ViewChild('photoInput') photoInput: ElementRef;
+
+  constructor(private route: ActivatedRoute, private router: Router, private toastyService: ToastyService, private toastyConfig: ToastyConfig,
+    private vehicleService: VehicleService, private photoService: PhotoService) {
+
     this.route.params.subscribe(p => {
       this.vehicleId = +p['id'];
       
@@ -45,5 +50,11 @@ export class ViewVehicleComponent implements OnInit {
         x => this.router.navigate([''])
        );
     }
+  }
+
+  uploadPhoto() {
+    var photoElement: HTMLInputElement = this.photoInput.nativeElement;
+    this.photoService.uploadPhoto(this.vehicleId, photoElement.files[0])
+      .subscribe(x => console.log(x));
   }
 }

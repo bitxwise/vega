@@ -15,6 +15,7 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 
 import { AppErrorHandler } from './app.error-handler';
 import { PaginationComponent } from './shared/pagination.component';
+import { PhotoService } from './services/photo.service';
 import { VehicleFormComponent } from './vehicle-form/vehicle-form.component';
 import { VehicleListComponent } from './vehicle-list/vehicle-list.component';
 import { ViewVehicleComponent } from './view-vehicle/view-vehicle.component';
@@ -48,6 +49,7 @@ import { ViewVehicleComponent } from './view-vehicle/view-vehicle.component';
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
+    PhotoService,
     VehicleService
   ],
   bootstrap: [AppComponent]

@@ -20,6 +20,10 @@
       <li *ngIf="vehicle.contact.email">{{ vehicle.contact.email }}</li>
     </ul>
   </div>
+  <div role="tabpanel" class="tab-pane" id="photos">
+    <h2>Photos</h2>
+    <input type="file" (change)="uploadPhoto()" #photoInput>
+  </div>
   <p>
     <a [routerLink]="['/vehicles/edit/', vehicleId]" routerLinkActive="router-link-active" class="btn btn-primary">Edit</a>
     <button *ngIf="vehicle.id" class="btn btn-danger" type="button" (click)="delete()">Delete</button>
