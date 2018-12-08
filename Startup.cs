@@ -29,7 +29,7 @@ namespace vega
 
             services.AddDbContext<VegaDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
 
-            services.AddScoped<IVehicleRepository, VehiclesRepository>();
+            services.AddScoped<IVehicleRepository, VehicleRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.Configure<PhotoSettings>(Configuration.GetSection("PhotoSettings"));

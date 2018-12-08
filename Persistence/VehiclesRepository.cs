@@ -10,13 +10,13 @@ using vega.Extensions;
 
 namespace vega.Persistence
 {
-    public class VehiclesRepository : IVehicleRepository
+    public class VehicleRepository : IVehicleRepository
     {
         private readonly VegaDbContext context;
 
         private readonly Dictionary<string, Expression<Func<Vehicle, object>>> vehicleFieldExpressionMap;
 
-        public VehiclesRepository(VegaDbContext context)
+        public VehicleRepository(VegaDbContext context)
         {
             this.context = context;
             
