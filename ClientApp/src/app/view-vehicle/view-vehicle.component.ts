@@ -18,6 +18,7 @@ export class ViewVehicleComponent implements OnInit {
   vehicleId: number;
 
   @ViewChild('photoInput') photoInput: ElementRef;
+  photos: any[];
 
   constructor(private route: ActivatedRoute, private router: Router, private toastyService: ToastyService, private toastyConfig: ToastyConfig,
     private vehicleService: VehicleService, private photoService: PhotoService) {
@@ -42,6 +43,10 @@ export class ViewVehicleComponent implements OnInit {
          }
       }
     );
+
+    this.photoService.getPhotos(this.vehicleId).subscribe(
+      p => this.photos = p
+    );
   }
 
   delete() {
@@ -55,6 +60,6 @@ export class ViewVehicleComponent implements OnInit {
   uploadPhoto() {
     var photoElement: HTMLInputElement = this.photoInput.nativeElement;
     this.photoService.uploadPhoto(this.vehicleId, photoElement.files[0])
-      .subscribe(x => console.log(x));
+      .subscribe(photo => this.photos.push(photo));
   }
 }
