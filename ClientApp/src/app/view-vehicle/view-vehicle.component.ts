@@ -1,6 +1,6 @@
 import { PhotoService } from './../services/photo.service';
 import { VehicleService } from './../services/vehicle.service';
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastyService, ToastyConfig } from 'ng2-toasty';
 import { Vehicle } from '../models/vehicle';
@@ -20,8 +20,9 @@ export class ViewVehicleComponent implements OnInit {
 
   @ViewChild('photoInput') photoInput: ElementRef;
   photos: any[];
+  uploadProgress: any;
 
-  constructor(private route: ActivatedRoute, private router: Router, private toastyService: ToastyService, private toastyConfig: ToastyConfig,
+  constructor(private route: ActivatedRoute, private router: Router, private toastyService: ToastyService, private toastyConfig: ToastyConfig, private zone: NgZone,
     private vehicleService: VehicleService, private photoService: PhotoService) {
 
     this.route.params.subscribe(p => {
@@ -59,6 +60,7 @@ export class ViewVehicleComponent implements OnInit {
   }
 
   uploadPhoto() {
+    this.uploadProgress = 0;
     var photoElement: HTMLInputElement = this.photoInput.nativeElement;
     this.photoService.uploadPhoto(this.vehicleId, photoElement.files[0])
       .subscribe((event: HttpEvent<any>) => {
@@ -71,8 +73,9 @@ export class ViewVehicleComponent implements OnInit {
             console.log('Response header received!');
             break;
           case HttpEventType.UploadProgress:
-            const percentage = Math.round(100 * event.loaded / event.total);
-            console.log(`Upload ${percentage}% complete`);
+            const progress = Math.round(100 * event.loaded / event.total);
+            this.zone.run(() => this.uploadProgress = progress);
+            console.log(`Upload ${progress}% complete`);
           case HttpEventType.DownloadProgress:
             const kbLoaded = Math.round(event.loaded / 1024);
             console.log(`Download in progress! ${ kbLoaded }Kb loaded`);
@@ -88,6 +91,6 @@ export class ViewVehicleComponent implements OnInit {
         } else {
           console.log("Server-side error occured.");
         }
-      });
+      }, () => this.uploadProgress = null);
   }
 }
