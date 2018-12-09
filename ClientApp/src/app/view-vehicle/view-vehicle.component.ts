@@ -61,8 +61,12 @@ export class ViewVehicleComponent implements OnInit {
 
   uploadPhoto() {
     this.uploadProgress = 0;
-    var photoElement: HTMLInputElement = this.photoInput.nativeElement;
-    this.photoService.uploadPhoto(this.vehicleId, photoElement.files[0])
+    
+    const photoElement: HTMLInputElement = this.photoInput.nativeElement;
+    const file = photoElement.files[0];
+    photoElement.value = '';
+
+    this.photoService.uploadPhoto(this.vehicleId, file)
       .subscribe((event: HttpEvent<any>) => {
         console.log(event)
         switch (event.type) {
