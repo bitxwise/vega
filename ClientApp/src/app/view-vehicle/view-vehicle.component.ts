@@ -67,18 +67,12 @@ export class ViewVehicleComponent implements OnInit {
         console.log(event)
         switch (event.type) {
           case HttpEventType.Sent:
-            console.log('Request sent');
-            break;
-          case HttpEventType.ResponseHeader:
-            console.log('Response header received!');
+            console.log('Upload request sent');
             break;
           case HttpEventType.UploadProgress:
             const progress = Math.round(100 * event.loaded / event.total);
             this.zone.run(() => this.uploadProgress = progress);
             console.log(`Upload ${progress}% complete`);
-          case HttpEventType.DownloadProgress:
-            const kbLoaded = Math.round(event.loaded / 1024);
-            console.log(`Download in progress! ${ kbLoaded }Kb loaded`);
             break;
           case HttpEventType.Response:
             this.photos.push(event.body);
@@ -87,9 +81,9 @@ export class ViewVehicleComponent implements OnInit {
         }
       }, (err: HttpErrorResponse) => {
         if (err.error instanceof Error) {
-          console.log("Client-side error occured.");
+          console.log("Client-side error");
         } else {
-          console.log("Server-side error occured.");
+          console.log("Server-side error");
         }
       }, () => this.uploadProgress = null);
   }
