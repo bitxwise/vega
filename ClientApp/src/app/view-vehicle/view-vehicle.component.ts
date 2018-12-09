@@ -4,7 +4,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastyService, ToastyConfig } from 'ng2-toasty';
 import { Vehicle } from '../models/vehicle';
-import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { HttpEvent, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-view-vehicle',
@@ -65,21 +65,28 @@ export class ViewVehicleComponent implements OnInit {
         console.log(event)
         switch (event.type) {
           case HttpEventType.Sent:
-            console.log('Request sent!');
+            console.log('Request sent');
             break;
           case HttpEventType.ResponseHeader:
             console.log('Response header received!');
             break;
           case HttpEventType.UploadProgress:
-            const percentDone = Math.round(100 * event.loaded / event.total);
-            console.log(`File is ${percentDone}% uploaded.`);
+            const percentage = Math.round(100 * event.loaded / event.total);
+            console.log(`Upload ${percentage}% complete`);
           case HttpEventType.DownloadProgress:
             const kbLoaded = Math.round(event.loaded / 1024);
             console.log(`Download in progress! ${ kbLoaded }Kb loaded`);
             break;
           case HttpEventType.Response:
             this.photos.push(event.body);
-            console.log('Done!', event.body);
+            console.log('Upload complete', event.body);
+            break;
+        }
+      }, (err: HttpErrorResponse) => {
+        if (err.error instanceof Error) {
+          console.log("Client-side error occured.");
+        } else {
+          console.log("Server-side error occured.");
         }
       });
   }
