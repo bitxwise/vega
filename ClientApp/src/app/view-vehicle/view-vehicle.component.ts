@@ -80,6 +80,14 @@ export class ViewVehicleComponent implements OnInit {
             break;
         }
       }, (err: HttpErrorResponse) => {
+        this.toastyService.error({
+          title: 'Error',
+          msg: err.error,
+          theme: 'default',
+          showClose: true,
+          timeout: 5000
+        });
+        console.log(err);
         if (err.error instanceof Error) {
           console.log("Client-side error");
         } else {
